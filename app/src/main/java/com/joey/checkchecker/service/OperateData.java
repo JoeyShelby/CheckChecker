@@ -3,7 +3,9 @@ package com.joey.checkchecker.service;
 
 import com.joey.checkchecker.dao.CheckItemDao;
 import com.joey.checkchecker.pojo.CheckItemEntity;
+import com.joey.checkchecker.utils.DateUtil;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,5 +29,30 @@ public class OperateData {
     //添加新项目
     public static void addItem(CheckItemDao checkItemDao, CheckItemEntity checkItem){
         checkItemDao.insertItem(checkItem);
+    }
+    //根据项目名称，返回最近的打卡日期
+    public static Date queryRecentDate(CheckItemDao checkItemDao,String name){
+        CheckItemEntity item = checkItemDao.getItemByName(name);
+        String recentDate = item.getRecentDate();
+        return DateUtil.stringToDate(recentDate);
+    }
+    //打卡成功，修改项目的最近打卡日期和连续打卡日期
+    public static void check(CheckItemDao checkItemDao,String name,Date recentDate,boolean gap){
+        CheckItemEntity item = checkItemDao.getItemByName(name);
+        item.setRecentDate(DateUtil.formatDate(recentDate));
+        if(gap){
+            item.setDays(item.getDays()+1);
+        }else{
+            item.setDays(1);
+        }
+        checkItemDao.updateItem(item);
+    }
+    //断签咯，重开吧孩子
+    public static void breakCheck(CheckItemDao checkItemDao,String name){
+        CheckItemEntity item = checkItemDao.getItemByName(name);
+        item.setRecentDate("1970/01/01");
+        item.setDays(0);
+
+        checkItemDao.updateItem(item);
     }
 }

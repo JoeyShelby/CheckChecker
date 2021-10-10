@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,9 +19,11 @@ import com.joey.checkchecker.R;
 import com.joey.checkchecker.dataBase.CheckItemDataBase;
 import com.joey.checkchecker.pojo.CheckItemEntity;
 import com.joey.checkchecker.service.OperateData;
+import com.joey.checkchecker.utils.DateUtil;
 import com.joey.checkchecker.utils.ToastUtil;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,9 +42,6 @@ public class CheckAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     public void initialize(){
         items = OperateData.queryAllItems(db.getCheckItemDao());
-        for(int i = 0; i < items.size(); i++){
-            Log.d("Joey:", items.get(i).toString());
-        }
     }
 
     //添加新项目
@@ -80,6 +80,26 @@ public class CheckAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         ((ItemViewHolder)holder).mTvItem.setText(items.get(position).getName());
+        //√点击打卡事件
+        ((ItemViewHolder)holder).mBtnCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Date date = OperateData.queryRecentDate(db.getCheckItemDao(), items.get(position).getName());
+                Date today = new Date();
+                long gapDays = (today.getTime() - date.getTime()) / (24 * 60 * 60 * 1000);
+                //判断是否能够打卡（每天只能打卡一次）
+                if(gapDays < 1){
+                    ToastUtil.showMeg(view.getContext(), "【"+items.get(position).getName()+"】今天已经打过卡了！", Toast.LENGTH_SHORT);
+                }else{
+                    //gapDays <= 1 判断是否为连续打卡
+                    OperateData.check(db.getCheckItemDao(), items.get(position).getName(), today, gapDays == 1);
+                    ToastUtil.showMeg(view.getContext(), "坚持就是胜利！", Toast.LENGTH_SHORT);
+                }
+
+                Log.d("JoeyItem", db.getCheckItemDao().getItemByName(items.get(position).getName()).toString());
+
+            }
+        });
         //长按项目【删除】事件
         ((ItemViewHolder)holder).mTvItem.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -120,9 +140,11 @@ public class CheckAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     // 适配器应该随意使用他们自己的自定义 ViewHolder 实现来存储数据，从而使绑定视图内容更容易。
     class ItemViewHolder extends RecyclerView.ViewHolder{
         private TextView mTvItem;
+        private Button mBtnCheck;
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             mTvItem = itemView.findViewById(R.id.tv_check_item);
+            mBtnCheck = itemView.findViewById(R.id.btn_check);
         }
     }
 

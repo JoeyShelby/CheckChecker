@@ -3,9 +3,11 @@
 
         <item
             android:id="@+id/item_check"
-            android:title="check"/>
+            android:title="check"
+            android:icon="@drawable/img_check_checker"/>
 
         <item
             android:id="@+id/item_count"
-            android:title="count"/>
+            android:title="count"
+            android:icon="@drawable/img_count"/>
 </menu>

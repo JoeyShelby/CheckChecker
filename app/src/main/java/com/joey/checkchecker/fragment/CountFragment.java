@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import com.joey.checkchecker.R;
 import com.joey.checkchecker.adapter.CheckAdapter;
 import com.joey.checkchecker.adapter.CountAdapter;
+import com.joey.checkchecker.dataBase.CheckItemDataBase;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +25,7 @@ import com.joey.checkchecker.adapter.CountAdapter;
  */
 public class CountFragment extends Fragment {
     private RecyclerView mRecyclerView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -74,8 +77,18 @@ public class CountFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mRecyclerView = view.findViewById(R.id.rv_count);
+        mSwipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout_main);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        mRecyclerView.setAdapter(new CountAdapter(view.getContext()));
+        CountAdapter countAdapter = new CountAdapter(view.getContext(), CheckItemDataBase.getCheckItemDataBase(view.getContext()));
+        mRecyclerView.setAdapter(countAdapter);
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                countAdapter.initialize();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 }

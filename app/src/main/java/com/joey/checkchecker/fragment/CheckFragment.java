@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,6 +37,7 @@ public class CheckFragment extends Fragment {
     private FloatingActionButton mFAB;    //添加按钮
     private EditText mEtAdd;
     private TextView mTvBlank;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public CheckFragment() {
         // Required empty public constructor
@@ -57,6 +59,7 @@ public class CheckFragment extends Fragment {
         mRecyclerView = view.findViewById(R.id.rv_check);
         mFAB = view.findViewById(R.id.fab_main);
         mTvBlank = view.findViewById(R.id.tv_blank);
+        mSwipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout_main);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         CheckAdapter checkAdapter = new CheckAdapter(view.getContext(),CheckItemDataBase.getCheckItemDataBase(view.getContext()));
@@ -104,6 +107,15 @@ public class CheckFragment extends Fragment {
                 });
                 myDialog.setCanceledOnTouchOutside(false);
                 myDialog.show();
+            }
+        });
+
+        //mSwipeRefreshLayout的下拉刷新事件
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                checkAdapter.initialize();
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
 

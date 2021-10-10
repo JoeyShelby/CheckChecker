@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/CODE/Android/CheckChecker/app/src/main/res/drawable/bg_check_button.xml" value="0.18425925925925926" />
+        <entry key="..\:/CODE/Android/CheckChecker/app/src/main/res/drawable/bg_fab_add.xml" value="0.18425925925925926" />
         <entry key="..\:/CODE/Android/CheckChecker/app/src/main/res/drawable/check_button.xml" value="0.16574074074074074" />
         <entry key="..\:/CODE/Android/CheckChecker/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/CODE/Android/CheckChecker/app/src/main/res/layout/fragment_blank.xml" value="0.10729166666666666" />
