@@ -53,7 +53,7 @@ public class CountAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        ((ItemViewHolder)holder).mTvCount.setText("【"+items.get(position).getName()+"】已经打卡了"+items.get(position).getDays()+"天");
+        ((ItemViewHolder)holder).mTvCount.setText("【"+items.get(position).getName()+"】连续打卡"+items.get(position).getDays()+"天");
     }
 
     @Override
